@@ -67,8 +67,7 @@ public class ProjectMain {
             indexList[] index=new indexList[sentences.length];//each item is words of one document
             InvertedIndex[] inverted;
 
-            BSTree<InvertedIndex>
-
+            BSTree<InvertedIndex> bst = new BSTree<>();
 
             for(int i=0;i<sentences.length;i++) {
                 System.out.println(i+")Entered");
