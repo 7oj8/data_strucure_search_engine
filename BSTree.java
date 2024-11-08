@@ -36,7 +36,7 @@ public class BSTree<T> {
      * Creates a new instance of BST
      */
 
-    public void BST() {
+    public BSTree() {
         root = current = null;
     }
 
@@ -72,29 +72,27 @@ public class BSTree<T> {
         current = q;
         return false;
     }
-
     public boolean insert(String k, T val) {
         BSTNode<T> p, q = current;
         if (findkey(k)) {
-            current = q;  // findkey() modified current
-            return false; // key already in the BST
+            current = q; // Restore current if key already exists
+            return false; // Key already in the BST
         }
-        p = new BSTNode<T>(k, val);
+        p = new BSTNode<>(k, val);
         if (empty()) {
             root = current = p;
-            return true;
         } else {
-            // current is pointing to parent of the new key
-            if (k.compareTo(current.key)< 0)
+            // current is pointing to the parent of the new key
+            if (k.compareTo(current.key) < 0) {
                 current.left = p;
-            else {
+            } else {
                 current.right = p;
-                current = p;
-                return true;
             }
+            // Only update current if it's a new node
+            current = p;
         }
-        return false;
-
+        return true;
     }
+
 }
 
