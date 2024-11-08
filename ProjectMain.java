@@ -110,7 +110,7 @@ public class ProjectMain {
                     //System.out.println("Sentence: "+sentences[j]);
 
                     if(sentences[j].contains(inverted[i].word)){
-                        //System.out.println(xx+++);
+
                         inverted[i].addDocument(documentId);
                         //System.out.println(sentences[j]);
                     }
