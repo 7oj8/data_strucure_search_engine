@@ -1,21 +1,21 @@
 
 public class indexList {
-	
+
 	private class Node{
 		String word;
 		int counter;
 		Node next;
-		
+
 		public Node(String newWord) {
 			counter=1;
 			word=newWord;
 			next=null;
 		}
 	}
-	
-	Node current,head;//every node is a word with counter
-	int wordCounter;//The First empty index and the number of current document
-	
+
+	Node current,head; //every node is a word with counter
+	int wordCounter; //The First empty index and the number of current document
+
 	public indexList() {
 		head=current=null;
 		wordCounter=0;
@@ -57,7 +57,7 @@ public class indexList {
 			n.counter=n.counter+1;
 		}
 	}
-	
+
 	public void printIndexNode() {
 		Node temp=head;
 		while(temp!=null) {

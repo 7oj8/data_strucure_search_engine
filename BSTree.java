@@ -1,11 +1,11 @@
 public class BSTree<T> {
-	
+
     private class BSTNode<T> {
         public String key;
         public T data;
         public BSTNode<T> left, right;
 
-        
+
         /**
          * Creates a new instance of BSTNode
          */
@@ -16,7 +16,7 @@ public class BSTree<T> {
             left = right = null;
 
         }
-        
+
         public BSTNode(String k, T val, BSTNode<T> l, BSTNode<T> r) {
 
             key = k;
@@ -74,7 +74,6 @@ public class BSTree<T> {
         BSTNode<T> p, q = current;
         if (findkey(k)) {
             current = q; // Restore current if key already exists
-
             return false; // Key already in the BST
         }
         p = new BSTNode<>(k, val);
