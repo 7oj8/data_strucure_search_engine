@@ -22,7 +22,7 @@ public class SimpleGUI {
 
         // Create the two main buttons: Index and Query & Ranking
         JButton indexButton = new JButton("Index");
-        JButton queryButton = new JButton("Query and Ranking");
+        //JButton queryButton = new JButton("Query and Ranking");
 
         // Create panels for additional controls (initially hidden)
         JPanel indexPanel = new JPanel();
@@ -55,27 +55,29 @@ public class SimpleGUI {
             }
         });
 
-        queryButton.addActionListener(new ActionListener() {
+        //queryPanel.removeAll();
+        queryPanel.add(new JLabel("Enter Query:"));
+        queryPanel.add(queryTextField);
+        JButton searchButton = new JButton("Query and Ranking");
+        queryPanel.add(searchButton);
+
+        //frame.revalidate();
+        //frame.repaint();
+        searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Show the query panel with the search box and button
-                queryPanel.removeAll();
-                queryPanel.add(new JLabel("Enter Query:"));
-                queryPanel.add(queryTextField);
-                JButton searchButton = new JButton("Search");
-                queryPanel.add(searchButton);
-                frame.revalidate();
-                frame.repaint();
+                // Perform an index operation (e.g., display text)
+                String text = queryTextField.getText();
+                JOptionPane.showMessageDialog(frame, "Indexing: " + ProjectMain.handleInput(text) );
             }
         });
-
         // Add action listeners for Index and Inverse Index buttons
         indexActionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Perform an index operation (e.g., display text)
                 String text = indexTextField.getText();
-                JOptionPane.showMessageDialog(frame, "Indexing: " + text);
+                JOptionPane.showMessageDialog(frame, "Indexing: " + ProjectMain.Printindex(Integer.parseInt(text)));
             }
         });
 
@@ -84,13 +86,13 @@ public class SimpleGUI {
             public void actionPerformed(ActionEvent e) {
                 // Perform inverse index operation (e.g., display text)
                 String text = indexTextField.getText();
-                JOptionPane.showMessageDialog(frame, "Inverse Indexing: " + text);
+                JOptionPane.showMessageDialog(frame, "Inverse Indexing: " + ProjectMain.printInvertedIndex(text));
             }
         });
 
         // Set up the layout and add the buttons to the main panel
         mainPanel.add(indexButton);
-        mainPanel.add(queryButton);
+        //mainPanel.add(queryButton);
 
         // Add the main panel and the dynamic panels (indexPanel and queryPanel) to the frame
         frame.add(mainPanel, BorderLayout.NORTH);
@@ -103,7 +105,7 @@ public class SimpleGUI {
 
     // Main method to instantiate the GUI class
     public static void main(String[] args) {
-        // Create an instance of SimpleGUI to launch the application
+        //Create an instance of SimpleGUI to launch the application
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

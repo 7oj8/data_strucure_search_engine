@@ -4,12 +4,14 @@ import java.io.FileReader;
 import java.util.Set;
 
 import javax.crypto.spec.IvParameterSpec;
+import javax.swing.SwingUtilities;
 import javax.swing.text.StyledEditorKit.BoldAction;
 
 
 public class ProjectMain {
 	static BSTree<InvertedIndex> bs;
 	static String[] documents;
+	static String strVar="";
 	static String handleFile() {
 		File file = new File("C:\\Users\\fmsa2\\Desktop\\دراسة\\عال 212\\Project\\data\\dataset.csv");
 		File secondFile = new File("C:\\Users\\fmsa2\\Desktop\\دراسة\\عال 212\\Project\\data\\stop.txt");
@@ -103,9 +105,15 @@ public class ProjectMain {
 			}
 		}
 		//test more than one boolean
-		handleInput("market AND sports");
+		//handleInput("market AND sports");
+//		SwingUtilities.invokeLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                new SimpleGUI();  // Create and display the GUI
+//            }
+//        });
 		SimpleGUI s = new SimpleGUI();
-		System.out.println("\n\nFinish!");
+		//System.out.println("\n\nFinish!");
 	}
 
 	public static int[] andMethod(int n1[],int n2[]) {
@@ -148,7 +156,7 @@ public class ProjectMain {
 			tmp2[i]=tmp[i];
 		}
 		System.out.println("Last thing in AND with size "+count);
-		printArr(tmp2);
+		//printArr(tmp2);
 		return tmp2;
 	}
 
@@ -193,15 +201,30 @@ public class ProjectMain {
 
 	}
 
-	public static void handleInput(String input) {
-		if(input.contains("AND")||input.contains("OR"))
-			printArr(handleBoolInput(input,0,new int[0]));
-		else {
-			handleRankingInput(input);
+	public static String handleInput(String input) {
+		System.out.println("The Input is"+input);
+		int arr[];
+		String text = "";
+		if(input.contains("AND")||input.contains("OR")) {
+			arr = handleBoolInput(input,0,new int[0]);
+			System.out.println("in the AND OR");
+			//printArr(arr);
+			for(int i=0;i<arr.length;i++) {
+				text= text +" " +arr[i];
+			}
 		}
+		else {
+			text = handleRankingInput(input);
+		}
+		strVar = text;
+		System.out.println("tmp: "+strVar);
+		return text;
+		//return "there is text!!!!!!";
+		//return text;
+
 	}
 
-	public static void handleRankingInput(String input){
+	public static String handleRankingInput(String input){
 		String words[] = input.toLowerCase().split(" ");
 		InvertedIndex n = null;
 		int documentsList[]=new int[0];
@@ -212,11 +235,11 @@ public class ProjectMain {
 				//System.out.println("len: "+n.getDocId().length);
 				//S M
 				documentsList = addArr(documentsList,n.getDocId());
-				printArr(documentsList);
+				//printArr(documentsList);
 			}
 			else {
 				System.out.println("The Words is not Saved!");
-				return;
+				return "";
 			}
 		}
 		documentCounterList = new int[documentsList.length];
@@ -233,10 +256,10 @@ public class ProjectMain {
 		//printArr(documentCounterList);
 		//printArrWithCount(documentsList, documentCounterList);
 		System.out.println("\n\n\n");
-		sortArr(documentsList,documentCounterList);
+		return sortArr(documentsList,documentCounterList);
 	}
 
-	public static void sortArr(int documents[],int counters[]) {
+	public static String sortArr(int documents[],int counters[]) {
 		int n = documents.length;
 		for (int i = 0; i < n-1; i++){
 			for (int j = 0; j < n-1-i; j++){
@@ -251,7 +274,7 @@ public class ProjectMain {
 				}
 			}
 		}
-		printArrWithCount(documents,counters);
+		return printArrWithCount(documents,counters);
 	}
 
 	public static int findDocumentCounter(String word,int id){
@@ -284,9 +307,11 @@ public class ProjectMain {
 
 		if (bs.findkey(arr[index-1].toLowerCase())) {
 			n1 = bs.retrieve();
+			System.out.println("n1= "+n1.word);
 		}
 		if (bs.findkey(arr[index+1].toLowerCase())) {
 			n2 = bs.retrieve();
+			System.out.println("n2= "+n2.word);
 		}
 		if(n1==null || n2==null) {
 			System.out.println("The used word doesn't exits");
@@ -298,7 +323,7 @@ public class ProjectMain {
 
 			if(empty) {
 				result = andMethod(n1.getDocId(), n2.getDocId());
-				printArr(result);
+				//printArr(result);
 			}
 			else {
 				result = andMethod(oldArr,n2.getDocId());
@@ -307,7 +332,7 @@ public class ProjectMain {
 		else if(arr[index].equals("OR")) {
 			if(empty) {
 				result = orMethod(n1.getDocId(),n2.getDocId());
-				printArr(result);
+				//printArr(result);
 			}
 			else {
 				result = orMethod(oldArr, n2.getDocId());
@@ -320,94 +345,42 @@ public class ProjectMain {
 		return handleBoolInput(input, index+1, result);
 	}
 
-	//old method
-	/*
-	public static void handleInput(String input) {
-		String arr[] = input.split(" ");
-		InvertedIndex n1 = null;
-		InvertedIndex n2 = null;
-		int[] result = new int[50];
-		for (int i = 0; i < arr.length; i++) {
-			if (arr[i].equals("AND")) {
-				System.out.println("in the AND");
-				if (bs.findkey(arr[i-1])) {    // If the word before 'AND' exists in the BST
-					n1 = bs.retrieve();
-					//System.out.println("\n\n\n\n"+n1.word+"\n\n\n");
-				}
-				if (bs.findkey(arr[i+1])) {    // If the word after 'AND' exists in the BST
-					n2 = bs.retrieve();
-					//System.out.println("\n\n\n\n"+n2.word+"\n\n\n");
-				}
-
-				if(n1==null || n2==null) {
-					System.out.println("The used word doesn't exits");
-					return new int[0];
-				}
-
-	            //int ex1[] = {1,2,3};
-	            //printArr(ex1);
-	            //int ex2[] = {4,5,7};
-	            //printArr(ex2);
-	            System.out.println("before and");
-	            result = andMethod(n1.getDocId(), n2.getDocId());
-
-	            //result = andMethod(ex1,ex2);
-	            System.out.println("after and");
-	            printArr(result);
-	            //int zzzzz[] = andMethod(n1.getDocId(), n2.getDocId());
-	            //System.out.println("Before");
-	            //System.out.println(zzzzz.length);
-	            //printArr(zzzzz);
-	            //System.out.println("After");
-	            //printArr(result);
-	            //System.out.println("AF");
-	            //resultCount = result.length;  // Set the count to the new size of the result array
-			}
-			else if (arr[i].equals("OR")) {  // Handle OR operation
-				if (bs.findkey(arr[i-1])) {    // If the word before 'OR' exists in the BST
-					n1 = bs.retrieve();  // Retrieve the Inverted Index for that word
-				}
-				if (bs.findkey(arr[i+1])) {    // If the word after 'OR' exists in the BST
-					n2 = bs.retrieve();  // Retrieve the Inverted Index for the other word
-				}
-
-				// Perform OR operation on the document IDs from both Inverted Indexes
-				result = orMethod(n1.getDocId(), n2.getDocId());
-				printArr(result);
-				//resultCount = result.length;  // Set the count to the new size of the result array
-			}
-//		        else {
-//		            // Handle the case when the word is a direct search term (not an operator)
-//		            if (bs.findkey(arr[i])) { // Check if the word exists in the BST
-//		            	//System.out.println("arr[i]: "+arr[i]);
-//		                n1 = bs.retrieve();  // Retrieve the Inverted Index for the word
-//		                //System.out.println("retrive: "+n1.word);
-//		                // Set the result to the document IDs associated with that word
-//		                result = n1.getDocId();
-//		                resultCount = result.length;  // Set the count to the length of the result array
-//		            }
-//		        }
-		    }
-
-		    // Output the final result (document IDs after all operations)
-		    //System.out.println("Resulting document IDs:");
-		    //printArr(result);
-
-//		    for (int i = 0; i < resultCount; i++) {
-//		        System.out.println(result[i]);
-//		    }
-	}*/
-
 	public static void printArr(int n1[]) {
 		System.out.println("in the printArr method:");
 		for(int i=0;i<n1.length;i++)
 			System.out.println(i+")i: "+n1[i]);
 	}
-	public static void printArrWithCount(int docs[] , int counts[]) {
+	public static String printArrWithCount(int docs[] , int counts[]) {
+		String text="";
 		System.out.println("in the print Arr With Counter method:");
 		for(int i=0;i<docs.length;i++) {
 			System.out.println(i+") Document Id: "+docs[i]+", With Counter: "+counts[i]);
-
+			text +=(i+") Document Id: "+docs[i]+", With Counter: "+counts[i]);
+			text+="\n";
 		}
+		return text;
+	}
+
+
+	//String list?? printInvertedIndex
+	public static String Printindex(int id) {
+		String text = documents[id].replaceAll("\\s{2,}", " ");
+		System.out.println(text);
+		return text;
+		//return documents[id];
+	}
+	public static String printInvertedIndex(String words) {
+		String text = "";
+		int arr[];
+		if(bs.findkey(words)) {
+			arr=bs.retrieve().getDocId();
+		}
+		else {
+			return "There is no Documents with This word....";
+		}
+		for(int i=0;i<arr.length;i++) {
+			text= text +" " +arr[i];
+		}
+		return text;
 	}
 }
