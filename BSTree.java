@@ -65,6 +65,7 @@ public class BSTree<T> {
         BSTNode<T> p, q = current;
         if (findkey(k)) {
             current = q; // Restore current if key already exists
+
             return false; // Key already in the BST
         }
         p = new BSTNode<>(k, val);
