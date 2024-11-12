@@ -37,7 +37,6 @@ public class InvertedIndex {
             return;
         }
         Node n = findDocument(id);
-
         if(n==null) {
             n=new Node(id);
             current.next=n;
