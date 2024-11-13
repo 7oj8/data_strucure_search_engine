@@ -13,8 +13,8 @@ public class indexList {
 		}
 	}
 	
-	Node current,head;//every node is a word with counter
-	int wordCounter;//The First empty index and the number of current document
+	Node current,head; //every node is a word with counter
+	int wordCounter; //The First empty index and the number of current document
 	
 	public indexList() {
 		head=current=null;
