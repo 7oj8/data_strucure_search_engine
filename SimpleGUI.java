@@ -17,11 +17,12 @@ public class SimpleGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create a new JPanel (main container)
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new FlowLayout());
+        //JPanel mainPanel = new JPanel();
+        //mainPanel.setLayout(new FlowLayout());
 
         // Create the two main buttons: Index and Query & Ranking
-        JButton indexButton = new JButton("Index");
+
+        //JButton indexButton = new JButton("Index");
         //JButton queryButton = new JButton("Query and Ranking");
 
         // Create panels for additional controls (initially hidden)
@@ -40,20 +41,22 @@ public class SimpleGUI {
         JButton indexActionButton = new JButton("Index");
         JButton inverseIndexActionButton = new JButton("Inverse Index");
 
+        indexPanel.add(new JLabel("Enter Text for Indexing:"));
+        indexPanel.add(indexTextField);
+        indexPanel.add(indexActionButton);
+        indexPanel.add(inverseIndexActionButton);
+        //frame.revalidate();
+        //frame.repaint();
+
         // Add action listeners to the buttons
-        indexButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Show the index panel with the text box and buttons
-                indexPanel.removeAll();
-                indexPanel.add(new JLabel("Enter Text for Indexing:"));
-                indexPanel.add(indexTextField);
-                indexPanel.add(indexActionButton);
-                indexPanel.add(inverseIndexActionButton);
-                frame.revalidate();
-                frame.repaint();
-            }
-        });
+//        indexButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                // Show the index panel with the text box and buttons
+//                indexPanel.removeAll();
+//
+//            }
+//        });
 
         //queryPanel.removeAll();
         queryPanel.add(new JLabel("Enter Query:"));
@@ -77,7 +80,15 @@ public class SimpleGUI {
             public void actionPerformed(ActionEvent e) {
                 // Perform an index operation (e.g., display text)
                 String text = indexTextField.getText();
-                JOptionPane.showMessageDialog(frame, "Indexing: " + ProjectMain.Printindex(Integer.parseInt(text)));
+                String result="";
+                try {
+                    result = ProjectMain.Printindex(Integer.parseInt(text));
+                }
+                catch (Exception error) {
+                    JOptionPane.showMessageDialog(frame, "Please Make Sure That The Input is an integer");
+                    return;
+                }
+                JOptionPane.showMessageDialog(frame, "Indexing: " + result);
             }
         });
 
@@ -91,11 +102,11 @@ public class SimpleGUI {
         });
 
         // Set up the layout and add the buttons to the main panel
-        mainPanel.add(indexButton);
+        //mainPanel.add(indexButton);
         //mainPanel.add(queryButton);
 
         // Add the main panel and the dynamic panels (indexPanel and queryPanel) to the frame
-        frame.add(mainPanel, BorderLayout.NORTH);
+        //frame.add(mainPanel, BorderLayout.NORTH);
         frame.add(indexPanel, BorderLayout.CENTER);
         frame.add(queryPanel, BorderLayout.SOUTH);
 

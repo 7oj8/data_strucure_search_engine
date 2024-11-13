@@ -45,30 +45,7 @@ public class InvertedIndex {
         return temp;
     }
 
-//	public void addDocument(int id) {
-//	    if (head == null) {
-//	        // Initialize the head with the first document
-//	        head = new Node(id);
-//	        current = head;
-//	        documentsCounter++; // Increment for a unique document
-//	        return;
-//	    }
-//
-//	    // Check if the document already exists
-//	    Node existingNode = findDocument(id);
-//	    if (existingNode == null) {
-//	    	//System.out.println("ADD");
-//	        // Document not found, add new node at the end
-//	        Node newNode = new Node(id);
-//	        current.next = newNode;
-//	        current = newNode;
-//	        documentsCounter++; // Increment for a unique document
-//	    } else {
-//	    	System.out.println("NOT ADD");
-//	        // Document found, increment its counter
-//	        existingNode.counter++;
-//	    }
-//	}
+
 
 
 

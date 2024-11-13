@@ -11,12 +11,10 @@ import javax.swing.text.StyledEditorKit.BoldAction;
 public class ProjectMain {
 	static BSTree<InvertedIndex> bs;
 	static String[] documents;
-	static String strVar="";
 	static String handleFile() {
 		File file = new File("C:\\Users\\fmsa2\\Desktop\\دراسة\\عال 212\\Project\\data\\dataset.csv");
 		File secondFile = new File("C:\\Users\\fmsa2\\Desktop\\دراسة\\عال 212\\Project\\data\\stop.txt");
 		try{
-
 			FileReader reader = new FileReader(file);
 			BufferedReader buffer = new BufferedReader(reader);
 			FileReader reader2 = new FileReader(secondFile);
@@ -41,26 +39,33 @@ public class ProjectMain {
 			return temp;
 		}
 		catch(Exception e) {
-			System.out.println("ERROR");
+			System.out.println("Error in handling file...");
 			System.out.println(e.getMessage());
 			return "";
 		}
 
 	}
+
 	public static void main(String[] args) {
 		System.out.println("Start....");
-		String fileText = handleFile();
-		//System.out.println(fileText);
+		String inputText = handleFile();
+		initDataStructure(inputText);
+		SimpleGUI s = new SimpleGUI();
+
+	}
+
+	public static void initDataStructure(String fileText) {
 		documents= fileText.split("\n");
-		bs= new BSTree<>();
-		String[] words=null;
-		indexList[] index=new indexList[documents.length];//each item is words of one document
+		bs = new BSTree<>();
+		String[] words;
+		//indexList[] index=new indexList[documents.length];//each item is words of one document
 		InvertedIndex[] inverted;
 		String wordsSpaces = fileText.replace("\n", " ");
 		wordsSpaces=wordsSpaces.replaceAll("\\s{2,}", " ");
 		words=wordsSpaces.split(" ");
-
 		int size=words.length;
+
+		//remove repeated words
 		for(int i=0;i<size;i++) {
 			for(int j=i+1;j<size;j++) {
 				if(words[i].equals(words[j])) {
@@ -72,55 +77,42 @@ public class ProjectMain {
 			}
 		}
 		int newSize = size;
-		inverted=new InvertedIndex[words.length];//newSize???
+		inverted=new InvertedIndex[newSize]; //words.length???
 		int documentId;
-		for(int i=0;i<newSize;i++) {
+		for(int i=0;i<newSize;i++) { //to loop over the words
 			inverted[i]= new InvertedIndex(words[i]);
-			for(int j=0;j<documents.length;j++) {
+			for(int j=0;j<documents.length;j++) { //to loop over the documents
 				documentId=j;
 				if(documents[j].contains(inverted[i].word)){
 					String splitDocumentByWord[] = documents[j].split(" ");
-					for(int z=0;z<splitDocumentByWord.length;z++) {
+					for(int z=0;z<splitDocumentByWord.length;z++) {//to add each repetation
 						if(splitDocumentByWord[z].equals(inverted[i].word)) {
 							inverted[i].addDocument(documentId);
 							bs.insert(words[i], inverted[i]);
+
 						}
 					}
-
-
-//					String splitDocumentByWord[] = documents[j].split(inverted[i].word);
-//					int NumOfRepeat = splitDocumentByWord.length-1;
-//					for(int z=0;z<NumOfRepeat;z++) {
-//						inverted[i].addDocument(documentId);
-//						bs.insert(words[i], inverted[i]);
-//					}
 				}
 			}
 		}
-		for(int i=0;i<newSize;i++) {
-			//inverted[i].printList();
-			if(bs.findkey(words[i])) {
-				//System.out.println(i+":");
-				//bs.retrieve().printList();
-			}
-		}
-		//test more than one boolean
-		//handleInput("market AND sports");
-//		SwingUtilities.invokeLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                new SimpleGUI();  // Create and display the GUI
-//            }
-//        });
-		SimpleGUI s = new SimpleGUI();
-		//System.out.println("\n\nFinish!");
+
+
+//		for(int i=0;i<avl.counter;i++) {
+//			if(avl.findkey("head")) {
+//				System.out.println(i+":");
+//				avl.retrieve().printList();
+//			}
+//			else {
+//				System.out.println("Not Found");
+//			}
+//		}
 	}
 
 	public static int[] andMethod(int n1[],int n2[]) {
-		System.out.println("n1:");
-		printArr(n1);
-		System.out.println("\nn2:");
-		printArr(n2);
+//		System.out.println("n1:");
+//		printArr(n1);
+//		System.out.println("\nn2:");
+//		printArr(n2);
 
 		int tmp[];
 		int count=0;
@@ -130,7 +122,7 @@ public class ProjectMain {
 		else {
 			tmp= new int[n2.length];
 		}
-		tmp[0]=-1;//as a flag for using this array
+		tmp[0]=-1; //as a flag for using this array
 
 		//you can compare values using new int as the index instead of O(n^2)???
 		for(int i=0;i<n1.length;i++) {
@@ -155,7 +147,7 @@ public class ProjectMain {
 		for(int i=0;i<count;i++) {
 			tmp2[i]=tmp[i];
 		}
-		System.out.println("Last thing in AND with size "+count);
+		//System.out.println("Last thing in AND with size "+count);
 		//printArr(tmp2);
 		return tmp2;
 	}
@@ -184,30 +176,30 @@ public class ProjectMain {
 			}
 		}
 		int result[]=new int[size];
-		for(int i=0;i<result.length;i++) {
+		for(int i=0;i<size;i++) {
 			result[i]=arr[i];
 		}
 		return result;
 	}
 
 	public static int[] orMethod(int n1[],int n2[]) {
-		System.out.println("in OR method");
-		System.out.println("n1:");
-		printArr(n1);
-		System.out.println("n2:");
-		printArr(n2);
+//		System.out.println("in OR method");
+//		System.out.println("n1:");
+//		printArr(n1);
+//		System.out.println("n2:");
+//		printArr(n2);
 		return addArr(n1, n2);
 
 
 	}
 
 	public static String handleInput(String input) {
-		System.out.println("The Input is"+input);
+		//System.out.println("The Input is"+input);
 		int arr[];
 		String text = "";
 		if(input.contains("AND")||input.contains("OR")) {
 			arr = handleBoolInput(input,0,new int[0]);
-			System.out.println("in the AND OR");
+			//System.out.println("in the AND OR");
 			//printArr(arr);
 			for(int i=0;i<arr.length;i++) {
 				text= text +" " +arr[i];
@@ -216,12 +208,7 @@ public class ProjectMain {
 		else {
 			text = handleRankingInput(input);
 		}
-		strVar = text;
-		System.out.println("tmp: "+strVar);
 		return text;
-		//return "there is text!!!!!!";
-		//return text;
-
 	}
 
 	public static String handleRankingInput(String input){
@@ -233,17 +220,18 @@ public class ProjectMain {
 			if(bs.findkey(words[i])){
 				n = bs.retrieve();
 				//System.out.println("len: "+n.getDocId().length);
-				//S M
 				documentsList = addArr(documentsList,n.getDocId());
 				//printArr(documentsList);
 			}
 			else {
-				System.out.println("The Words is not Saved!");
-				return "";
+				//System.out.println("The Words is not Saved!");
+				return "The Words is not Saved!";
 			}
 		}
 		documentCounterList = new int[documentsList.length];
 		int documentNum;
+
+
 		for(int i=0;i<documentCounterList.length;i++) {
 			documentNum=documentsList[i];
 			for(int j=0;j<words.length;j++) {
@@ -362,7 +350,6 @@ public class ProjectMain {
 	}
 
 
-	//String list?? printInvertedIndex
 	public static String Printindex(int id) {
 		String text = documents[id].replaceAll("\\s{2,}", " ");
 		System.out.println(text);
@@ -372,9 +359,10 @@ public class ProjectMain {
 	public static String printInvertedIndex(String words) {
 		String text = "";
 		int arr[];
-		if(bs.findkey(words)) {
+		if(bs.findkey(words.toLowerCase())) {
 			arr=bs.retrieve().getDocId();
 		}
+
 		else {
 			return "There is no Documents with This word....";
 		}
