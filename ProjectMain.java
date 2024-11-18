@@ -11,6 +11,30 @@ import javax.swing.text.StyledEditorKit.BoldAction;
 public class ProjectMain {
 	static BSTree<InvertedIndex> bs;
 	static String[] documents;
+	static InvertedIndex[] inverted;
+	static indexList[] index;
+	
+	public static void main(String[] args) {
+		System.out.println("Start....");	
+		String inputText = handleFile();
+		initDataStructure(inputText);
+		printArr(getIndexDocs("market"));
+		printArr(getIndexDocs("sports"));
+		printArr(getIndexDocs("warming"));
+		int a[]=handleBool("market OR sports AND warming","index");
+		printArr(a);
+		System.out.println("------------------------------------");
+		printArr(handleBool("market OR sports AND warming","inverse"));//41 Finished for one 
+		System.out.println("2");
+		int aa[]=handleBool("market OR sports AND warming","bst"); //41 Finished for one 
+		printArr(aa);
+		System.out.println("break");
+		printArr(notMethod(aa,documents.length)); 
+		System.out.println("3");
+		SimpleGUI s = new SimpleGUI();
+		
+	}
+	
 	static String handleFile() {
 		File file = new File("C:\\Users\\fmsa2\\Desktop\\دراسة\\عال 212\\Project\\data\\dataset.csv");
 		File secondFile = new File("C:\\Users\\fmsa2\\Desktop\\دراسة\\عال 212\\Project\\data\\stop.txt");
@@ -43,29 +67,44 @@ public class ProjectMain {
 			System.out.println(e.getMessage());
 			return "";
 		}
-		
 	}
 	
-	public static void main(String[] args) {
-		System.out.println("Start....");	
-		String inputText = handleFile();
-		initDataStructure(inputText);
-		SimpleGUI s = new SimpleGUI();
-		
-	}
 	
 	public static void initDataStructure(String fileText) {
 		documents= fileText.split("\n");
 		bs = new BSTree<>();
 		String[] words;
-		//indexList[] index=new indexList[documents.length];//each item is words of one document
-		InvertedIndex[] inverted;
+		System.out.println("documents number: "+documents.length);
+		index=new indexList[documents.length];//each item is words of one document
+		
 		String wordsSpaces = fileText.replace("\n", " ");
 		wordsSpaces=wordsSpaces.replaceAll("\\s{2,}", " ");
+		wordsSpaces= wordsSpaces.replaceAll("^ ", "");//remove space at the start
+		//System.out.println("words Spaced:\n"+wordsSpaces);
 		words=wordsSpaces.split(" ");
 		int size=words.length;
 		
-		//remove repeated words
+		//init Index
+		for(int i=0;i<documents.length;i++) {
+			index[i]=new indexList();
+			for(int j=0;j<words.length;j++) {
+				if(documents[i].contains(words[j])) {
+					String documentWords[]=documents[i].split(" ");
+					for(int z=0;z<documentWords.length;z++) {
+						if(documentWords[z].equals(words[j])) {
+							index[i].addWord(words[j]);
+						}
+					}
+				}
+			}
+		}
+		
+//		for(int i=0;i<index.length;i++) {
+//			System.out.println(i+":");
+//			index[i].printIndexNode();
+//		}
+		
+		//Move Repeated words to the end/remove them
 		for(int i=0;i<size;i++) {
 			for(int j=i+1;j<size;j++) {
 				if(words[i].equals(words[j])) {	
@@ -77,19 +116,20 @@ public class ProjectMain {
 			}
 		}
 		int newSize = size;
+		
 		inverted=new InvertedIndex[newSize]; //words.length???
 		int documentId;
+		//Inverted and BST
 		for(int i=0;i<newSize;i++) { //to loop over the words
 			inverted[i]= new InvertedIndex(words[i]);
 			for(int j=0;j<documents.length;j++) { //to loop over the documents
 				documentId=j;
-				if(documents[j].contains(inverted[i].word)){
+				if(documents[documentId].contains(inverted[i].word)){
 					String splitDocumentByWord[] = documents[j].split(" ");
 					for(int z=0;z<splitDocumentByWord.length;z++) {//to add each repetation
 						if(splitDocumentByWord[z].equals(inverted[i].word)) {
 							inverted[i].addDocument(documentId);
 							bs.insert(words[i], inverted[i]);
-							
 						}
 					}
 				}
@@ -107,6 +147,26 @@ public class ProjectMain {
 //			}
 //		}
 	}
+	public static int[] notMethod(int documents[],int spaceSize) {
+		int newSize=spaceSize-documents.length,pos=0;
+		int result[]=new int[newSize];
+		//initiate with all documents
+		boolean found;
+		for(int i=0;i<spaceSize;i++) {
+			found=false;
+			for(int j=0;j<documents.length;j++) {
+				if(documents[j]==i) {
+					found=true;
+					break;
+				}
+			}
+			if(!found) {
+				result[pos++]=i;
+			}
+		}
+		return result;
+	}
+	
 	
 	public static int[] andMethod(int n1[],int n2[]) {
 //		System.out.println("n1:");
@@ -133,7 +193,6 @@ public class ProjectMain {
 				}
 			}
 		}
-		
 		boolean arrIsInit=false;
 		if(tmp[0]!=-1)
 			arrIsInit=true;
@@ -189,44 +248,97 @@ public class ProjectMain {
 //		System.out.println("n2:");
 //		printArr(n2);
 		return addArr(n1, n2);
-		
-		
 	}
 	
-	public static String handleInput(String input) {
-		//System.out.println("The Input is"+input);
-		int arr[];
-		String text = "";
-		if(input.contains("AND")||input.contains("OR")) {
-			arr = handleBoolInput(input,0,new int[0]);
+//	public static String handleInput(String input) {
+//		//System.out.println("The Input is"+input);
+//		int arr[];
+//		String text = "";
+//		if(input.contains("AND")||input.contains("OR")) {
+//			arr = handleBoolBST(input);
+//			//System.out.println("in the AND OR");
+//			//printArr(arr);
+//			for(int i=0;i<arr.length;i++) {
+//				text= text +" " +arr[i];
+//			}
+//		}
+//		else {
+//			text = handleRankingInput(input);
+//		}
+//		return text;
+//	}
+	
+	
+	public static String bstHandler(String input) {
+		int result[]=new int[0];
+		String text="";
+		if(input.contains("AND")||input.contains("OR")||input.contains("NOT")) {
+			result = handleBool(input, "bst");
 			//System.out.println("in the AND OR");
 			//printArr(arr);
-			for(int i=0;i<arr.length;i++) {
-				text= text +" " +arr[i];
+			for(int i=0;i<result.length;i++) {
+				text= text +" " +result[i];
 			}
 		}
 		else {
-			text = handleRankingInput(input);
+			text = handleRankingInput(input,"bst");
 		}
 		return text;
 	}
 	
-	public static String handleRankingInput(String input){
+	public static String indexHandler(String input) {
+		int result[]=new int[0];
+		String text="";
+		if(input.contains("AND")||input.contains("OR")||input.contains("NOT")) {
+			result = handleBool(input, "index");
+			//System.out.println("in the AND OR");
+			//printArr(arr);
+			for(int i=0;i<result.length;i++) {
+				text= text +" " +result[i];
+			}
+		}
+		else {
+			text =handleRankingInput(input,"index");
+		}
+		return text;
+	}
+	
+	public static String inverseHandler(String input) {
+		int result[]=new int[0];
+		String text="";
+		if(input.contains("AND")||input.contains("OR")||input.contains("NOT")) {
+			result = handleBool(input, "inverse");
+			//System.out.println("in the AND OR");
+			//printArr(arr);
+			for(int i=0;i<result.length;i++) {
+				text= text +" " +result[i];
+			}
+		}
+		else {
+			text =handleRankingInput(input,"inverse");
+		}
+		return text;
+	}
+	public static String handleRankingInput(String input,String caller){
 		String words[] = input.toLowerCase().split(" ");
-		InvertedIndex n = null;
+		int n []= new int[0];
 		int documentsList[]=new int[0];
 		int documentCounterList[];
 		for(int i=0;i<words.length;i++) {
-			if(bs.findkey(words[i])){
-				n = bs.retrieve();
-				//System.out.println("len: "+n.getDocId().length);
-				documentsList = addArr(documentsList,n.getDocId());
-				//printArr(documentsList);
+			if(caller.equalsIgnoreCase("bst")){
+				n = getBSTDocs(words[i]);
+			}
+			else if(caller.equalsIgnoreCase("index")) {
+				n= getIndexDocs(words[i]);
+			}
+			else if(caller.equalsIgnoreCase("inverse")) {
+				n=getInverseDocs(words[i]);
 			}
 			else {
 				//System.out.println("The Words is not Saved!");
 				return "The Words is not Saved!";
 			}
+			documentsList = addArr(documentsList,n);
 		}
 		documentCounterList = new int[documentsList.length];
 		int documentNum;
@@ -274,64 +386,242 @@ public class ProjectMain {
 	}
 	
 	
-	public static int[] handleBoolInput(String input,int index,int[] oldArr){
+//	public static int[] handleBoolInput(String input,int pos,int[] oldArr){
+//		String arr[] = input.split(" ");
+//		int size = arr.length;
+//		if(pos+1>=size) {
+//			System.out.println("stop Recursion");
+//		    	return oldArr;
+//		    }
+//		boolean empty;
+//		if(oldArr.length==0)
+//			empty = true;			
+//		else 
+//			empty = false;
+//		
+//		pos++;
+//		InvertedIndex n1 = null;
+//		InvertedIndex n2 = null;
+//		int[] result;
+//		System.out.println("words list len:"+size+" and index:"+pos);
+//		
+//
+//		
+//
+//		
+//		
+//		
+//		//System.out.println("our side");
+////		System.out.println("n1: "+n1.getWord());
+////		System.out.println("n2: "+n2.getWord());
+//		//System.exit(1);
+//		
+//		if(arr[pos].equals("AND")) {
+//			System.out.println("in the AND");
+//			
+//            if(empty) {
+//            	result = andMethod(n1.getDocId(), n2.getDocId());
+//                //printArr(result);
+//            }
+//            else {
+//            	result = andMethod(oldArr,n2.getDocId());
+//            }
+//		}
+//		else if(arr[pos].equals("OR")) {
+//			if(empty) {
+//				result = orMethod(n1.getDocId(),n2.getDocId());
+//				//printArr(result);
+//			}
+//			else {
+//				result = orMethod(oldArr, n2.getDocId());
+//			}
+//		}
+//		else {
+//			System.out.println("error in words order!!");
+//			return new int [0];
+//		}
+//		return handleBoolInput(input, pos+1, result);
+//	}
+	
+	
+	
+	
+	
+	//		 head OR sports AND market AND warm OR weather 
+	//Stack1: head ->  res -> weather
+	//Stack2: OR -> OR
+	
+	
+	
+	
+	
+	
+	
+	public static int[] handleBool(String input,String caller) {
 		String arr[] = input.split(" ");
-		int size = arr.length;
-		if(index+1>=size) {
-			System.out.println("stop Recursion");
-		    	return oldArr;
-		    }
-		boolean empty;
-		if(oldArr.length==0)
-			empty = true;			
-		else 
-			empty = false;
+		//int pos=1;
+		int[] result=new int[0];
+		Stack<String> opStack=new Stack<String>();
+		Stack<int[]> documentsStack=new Stack<int[]>();
 		
-		index++;
-		InvertedIndex n1 = null;
-		InvertedIndex n2 = null;
-		int[] result;
-		System.out.println("words list len:"+size+" and index:"+index);
-		
-		if (bs.findkey(arr[index-1].toLowerCase())) {
-			n1 = bs.retrieve();
-			System.out.println("n1= "+n1.word);
-		}
-		if (bs.findkey(arr[index+1].toLowerCase())) {
-			n2 = bs.retrieve();
-			System.out.println("n2= "+n2.word);
-		}
-		if(n1==null || n2==null) {
-			System.out.println("The used word doesn't exits");
-			return new int[0];
-		}
-		
-		if(arr[index].equals("AND")) {
-			System.out.println("in the AND");
+		for(int i=0;i<arr.length;i++) {
+			System.out.println("The Word: "+arr[i]);
+			if(arr[i].equals("AND")){
+				System.out.println("found AND");
+				opStack.push("AND");
+			}
+			else if(arr[i].equals("OR")) {
+				if(opStack.empty() || !opStack.topDataWithoutPop().equals("AND")) {
+					opStack.push("OR");
+					System.out.println("Added OR");
+				}
+				else {
+					System.out.println("Error! Two Boolean Operation After Each Other");//???
+					return new int[0];
+				}
+			}
+			else if(arr[i].equals("NOT")) {
+				System.out.println("Found NOT");
+				opStack.push("NOT");
+			}
+			else {//normal word
+				int wordArr[];
+				if(caller.equalsIgnoreCase("index")) {
+					wordArr = getIndexDocs(arr[i]);//!!!!!!!!
+				}
+				else if(caller.equalsIgnoreCase("inverse")) {
+					wordArr =getInverseDocs(arr[i]);
+				}
+				else if(caller.equalsIgnoreCase("bst")){
+					wordArr = getBSTDocs(arr[i]);
+				}
+				else {
+					System.out.println("Error unknown caller!!");
+					return new int[0];
+				}	
+				System.out.println("top method: "+opStack.topDataWithoutPop());
+				if(opStack.empty()|| opStack.topDataWithoutPop().equals("OR")) {
+					System.out.println("Pushed a word");
+					documentsStack.push(wordArr);
+				}
+				else if(opStack.topDataWithoutPop().equals("AND")) {
+					System.out.println("Word With AND");
+					opStack.pop();
+					if(!documentsStack.empty()) {
+						System.out.println("Dealing with 2 words with AND");
+						int docs[] = documentsStack.pop();
+						result = andMethod(docs, wordArr);
+						documentsStack.push(result);
+					}
+					else {
+						System.out.println("Error??");
+					}
+				}
+				else if(opStack.topDataWithoutPop().equals("NOT")) {
+					System.out.println("Dealing With NOT");
+					opStack.pop();
+					result = notMethod(wordArr, documents.length);
+					documentsStack.push(result);
+				}
+				else {
+					System.out.println("Error in Order of words and operations!!");
+					return new int [0];
+				}
+			}
 			
-            if(empty) {
-            	result = andMethod(n1.getDocId(), n2.getDocId());
-                //printArr(result);
-            }
-            else {
-            	result = andMethod(oldArr,n2.getDocId());
-            }
 		}
-		else if(arr[index].equals("OR")) {
-			if(empty) {
-				result = orMethod(n1.getDocId(),n2.getDocId());
-				//printArr(result);
+		while(!documentsStack.empty()) {
+			result = orMethod(result, documentsStack.pop());
+		}
+		return result;
+	}
+	
+	public static int[] getIndexDocs(String word) {
+		int documentElement[]=new int[index.length];
+		int counter=0;
+		for(int i=0;i<index.length;i++) {
+			if(index[i].checkExistanceOfWord(word)) {
+				documentElement[counter++]=i;
 			}
-			else {
-				result = orMethod(oldArr, n2.getDocId());
-			}
+		}
+		int result[]=new int[counter];
+		for(int i=0;i<counter;i++) {
+			result[i]=documentElement[i];
+		}
+		return result;
+	}
+	
+	public static int[] getInverseDocs(String word) {
+		for(int i=0;i<inverted.length;i++) {
+			if(inverted[i].word.equalsIgnoreCase(word))
+				return inverted[i].getDocId();
+		}
+		System.out.println("inverse docs not Found!!");
+		return new int[0];
+	}
+	
+	public static int[] getBSTDocs(String word) {
+		if(bs.findkey(word)) {
+			return bs.retrieve().getDocId();
 		}
 		else {
-			System.out.println("error in words order!!");
-			return new int [0];
+			System.out.println("BST docs not found!!");
+			return new int[0];
 		}
-		return handleBoolInput(input, index+1, result);
 	}
+	
+//	public static int[] handleBoolInverted(String input) {
+//		String arr[] = input.split(" ");
+//		int size = arr.length;
+//		int pos = 1;
+//		InvertedIndex n1 = null;
+//		InvertedIndex n2 = null;
+//		//Inverted
+//		for(int i=0;i<inverted.length;i++) {
+//			if(arr[pos-1].equals(inverted[i].getWord())) {
+//				n1=inverted[i];
+//			}
+//			
+//			if(arr[pos+1].equals(inverted[i].getWord())) {
+//				n2=inverted[i];
+//			}
+//			if(n1!=null && n2!=null) {
+//				//System.out.println(i+")found both about to leave");
+//				break;
+//			}
+//		}
+//		if(n1==null || n2==null) {
+//			System.out.println("the word is not found!");
+//			return new int[0];
+//		}
+//		int result[]=andMethod(n1.getDocId(), n2.getDocId());
+//		printArr(result);
+//		return result;
+//	}
+//	
+//	public static int[] handleBoolBST(String input) {
+//		String arr[] = input.split(" ");
+//		//int size = arr.length;
+//		int pos = 1;
+//		InvertedIndex n1 = null;
+//		InvertedIndex n2 = null;
+//		//BST
+//		if (bs.findkey(arr[pos-1].toLowerCase())) {
+//			n1 = bs.retrieve();
+//			//System.out.println("n1= "+n1.word);
+//		}
+//		if (bs.findkey(arr[pos+1].toLowerCase())) {
+//			n2 = bs.retrieve();
+//			//System.out.println("n2= "+n2.word);
+//		}
+//		if(n1==null || n2==null) {
+//			System.out.println("The used word doesn't exits");
+//			return new int[0];
+//		}
+//		int result[]=andMethod(n1.getDocId(), n2.getDocId());
+//		printArr(result);
+//		return result;
+//	}
 	
 	public static void printArr(int n1[]) {
 		System.out.println("in the printArr method:");
@@ -362,7 +652,6 @@ public class ProjectMain {
 		if(bs.findkey(words.toLowerCase())) {
 			 arr=bs.retrieve().getDocId();
 		}
-		
 		else {
 			return "There is no Documents with This word....";
 		}

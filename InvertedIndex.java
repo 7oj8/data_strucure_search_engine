@@ -3,7 +3,7 @@ public class InvertedIndex {
 	
 	
 	private class Node{
-		int documentId,counter; //counter?
+		int documentId,counter;
 		Node next;
 		
 		public Node(int id) {
@@ -12,9 +12,9 @@ public class InvertedIndex {
 			next=null;
 		}
 		
-		public int getId() {
-			return documentId;
-		}
+//		public int getId() {
+//			return documentId;
+//		}
 	}
 	
 	Node current,head;
@@ -36,6 +36,9 @@ public class InvertedIndex {
 		documentsCounter=0;
 	}
 	
+	public String getWord() {
+		return word;
+	}
 	private Node findDocument(int id) {
 		Node temp=head;	                                
 		while(temp!=null&&temp.documentId!=id) { 
@@ -52,8 +55,8 @@ public class InvertedIndex {
 	//old add
 	int i=0;
 	public void addDocument(int id) {
-		//System.out.println("PRINT");
-		if(head==null) {
+		
+		if(head==null) {//first Node
 			current = head = new Node(id);
 			return;
 		}
