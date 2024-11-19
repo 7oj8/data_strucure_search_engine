@@ -10,11 +10,8 @@ public class SimpleGUI {
         frame.setSize(600, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel indexPanel = new JPanel();
-        //JPanel queryPanel = new JPanel();
         indexPanel.setLayout(new FlowLayout());
-        //queryPanel.setLayout(new FlowLayout());
         JTextField indexTextField = new JTextField(20);
-        //JTextField queryTextField = new JTextField(20);
         JButton index = new JButton("Index");
         JButton inverseIndex = new JButton("Inverse Index");
         JButton bst = new JButton("BST");
@@ -23,10 +20,6 @@ public class SimpleGUI {
         indexPanel.add(index);
         indexPanel.add(inverseIndex);
         indexPanel.add(bst);
-        //queryPanel.add(new JLabel("Enter Query:"));
-        //queryPanel.add(queryTextField);
-        
-        //queryPanel.add(searchButton);
         bst.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -62,7 +55,6 @@ public class SimpleGUI {
             }
         });
         frame.add(indexPanel, BorderLayout.CENTER);
-        //frame.add(queryPanel, BorderLayout.SOUTH);
         frame.setVisible(true);
     }
 
@@ -70,7 +62,7 @@ public class SimpleGUI {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new SimpleGUI();  // Create and display the GUI
+                new SimpleGUI(); 
             }
         });
     }

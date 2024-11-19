@@ -13,8 +13,8 @@ public class indexList {
 		}
 	}
 	
-	Node current,head; //every node is a word with counter
-	int wordCounter; //The First empty index and the number of current document
+	Node current,head; 
+	int wordCounter;
 	
 	
 	public indexList() {
@@ -29,13 +29,6 @@ public class indexList {
 			temp=temp.next;
 		}
 		return temp;
-//		for(int i=0;i<wordCounter;i++) {
-//			temp = nodeArr[i];
-//			if(temp.word.equals(word)) {
-//				return i;
-//			}
-//		}
-//		return -1;
 	}
 
 	public void addWord(String word) {

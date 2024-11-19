@@ -11,25 +11,12 @@ public class InvertedIndex {
 			documentId=id;
 			next=null;
 		}
-		
-//		public int getId() {
-//			return documentId;
-//		}
 	}
 	
 	Node current,head;
 	String word="";
 	int documentsCounter;
 	
-	
-	
-	
-	
-	
-	
-//	public void printDocumentId() {
-//		System.out.println();
-//	}
 	public InvertedIndex(String word) {
 		this.word=word;
 		head=current=null;
@@ -49,11 +36,6 @@ public class InvertedIndex {
 	}
 	
 
-
-	
-	
-	//old add
-	int i=0;
 	public void addDocument(int id) {
 		
 		if(head==null) {//first Node
@@ -63,14 +45,12 @@ public class InvertedIndex {
 		
 		Node n = findDocument(id);
 		if(n==null) {
-			//System.out.println(i+++")ADD");
 			n=new Node(id);
 			current.next=n;
 			current=n;
 			documentsCounter++;
 		}
 		else {
-			//System.out.println("NOT ADD");
 			n.counter=n.counter+1;
 		}
 	}
