@@ -25,7 +25,7 @@ public class SimpleGUI {
             public void actionPerformed(ActionEvent e) {
                 String text = indexTextField.getText();
                 Long startTime = System.nanoTime();
-                String result=ProjectMain.bstHandler(text);
+                String result=ProjectMain.handleInput(text,"bst");
                 Long endTime = System.nanoTime();
                 Long totalTime=(endTime-startTime)/1000;
                 JOptionPane.showMessageDialog(frame, "System Found Result in "+totalTime+" millisecond \nResult:\n" + result );
@@ -36,7 +36,7 @@ public class SimpleGUI {
             public void actionPerformed(ActionEvent e) {
                 String text = indexTextField.getText();
                 Long startTime = System.nanoTime();
-                String result= ProjectMain.indexHandler(text);
+                String result= ProjectMain.handleInput(text,"index");
                 Long endTime = System.nanoTime();
                 Long totalTime=(endTime-startTime)/1000;
                 JOptionPane.showMessageDialog(frame, "System Found Result in "+totalTime+" millisecond \nResult:\n" + result );
@@ -48,7 +48,7 @@ public class SimpleGUI {
             public void actionPerformed(ActionEvent e) {
                 String text = indexTextField.getText();
                 Long startTime = System.nanoTime();
-                String result = ProjectMain.inverseHandler(text);
+                String result = ProjectMain.handleInput(text,"inverse");
                 Long endTime = System.nanoTime();
                 Long totalTime=(endTime-startTime)/1000;
                 JOptionPane.showMessageDialog(frame, "System Found Result in "+totalTime+" millisecond \nResult:\n" + result );

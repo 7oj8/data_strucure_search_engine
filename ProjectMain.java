@@ -49,7 +49,6 @@ public class ProjectMain {
 		}
 	}
 	
-	
 	public static void initDataStructure(String fileText) {
 		documents= fileText.split("\n");
 		bs = new BSTree<>();
@@ -105,6 +104,7 @@ public class ProjectMain {
 			}
 		}
 	}
+	
 	public static int[] notMethod(int documents[],int documentCount) {
 		int newSize=documentCount-documents.length;
 		int pos=0;
@@ -125,7 +125,6 @@ public class ProjectMain {
 		}
 		return result;
 	}
-	
 	
 	public static int[] andMethod(int n1[],int n2[]) {		
 		int tmp[];
@@ -196,50 +195,22 @@ public class ProjectMain {
 		return addArr(n1, n2);
 	}
 	
-	public static String bstHandler(String input) {
+	public static String handleInput(String input, String caller) {
 		int result[]=new int[0];
 		String text="";
 		if(input.contains("AND")||input.contains("OR")||input.contains("NOT")) {
-			result = handleBool(input, "bst");
+			result = handleBool(input, caller);
 			for(int i=0;i<result.length;i++) {
 				text= text +" " +result[i];
 			}
 		}
 		else {
-			text = handleRankingInput(input,"bst");
+			text =handleRankingInput(input,caller);
 		}
 		return text;
 	}
 	
-	public static String indexHandler(String input) {
-		int result[]=new int[0];
-		String text="";
-		if(input.contains("AND")||input.contains("OR")||input.contains("NOT")) {
-			result = handleBool(input, "index");
-			for(int i=0;i<result.length;i++) {
-				text= text +" " +result[i];
-			}
-		}
-		else {
-			text =handleRankingInput(input,"index");
-		}
-		return text;
-	}
 	
-	public static String inverseHandler(String input) {
-		int result[]=new int[0];
-		String text="";
-		if(input.contains("AND")||input.contains("OR")||input.contains("NOT")) {
-			result = handleBool(input, "inverse");
-			for(int i=0;i<result.length;i++) {
-				text= text +" " +result[i];
-			}
-		}
-		else {
-			text =handleRankingInput(input,"inverse");
-		}
-		return text;
-	}
 	public static String handleRankingInput(String input,String caller){
 		String words[] = input.toLowerCase().split(" ");
 		int n []= new int[0];
@@ -378,7 +349,7 @@ public class ProjectMain {
 		int documentElement[]=new int[index.length];
 		int counter=0;
 		for(int i=0;i<index.length;i++) {
-			if(index[i].checkExistanceOfWord(word)) {
+			if(index[i].checkExistanceOfWord(word.toLowerCase())) {
 				documentElement[counter++]=i;
 			}
 		}
@@ -399,7 +370,7 @@ public class ProjectMain {
 	}
 	
 	public static int[] getBSTDocs(String word) {
-		if(bs.findkey(word)) {
+		if(bs.findkey(word.toLowerCase())) {
 			return bs.retrieve().getDocId();
 		}
 		else {
