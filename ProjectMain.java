@@ -355,6 +355,7 @@ public class ProjectMain {
 					opStack.pop();
 					result = notMethod(wordArr, documents.length);
 					documentsStack.push(result);
+					//market [1...50]
 				}
 				else {
 					System.out.println("Error in Order of words and operations!!");
@@ -362,6 +363,10 @@ public class ProjectMain {
 				}
 			}
 			
+		}
+		if(!documentsStack.empty() && opStack.empty()) {
+			System.out.println("Make sure of Boolean Operations count");
+			return new int[0];
 		}
 		while(!documentsStack.empty()) {
 			result = orMethod(result, documentsStack.pop());
