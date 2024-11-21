@@ -16,8 +16,8 @@ public class ProjectMain {
 	}
 
 	static String handleFile() {
-		File file = new File("C:\\Users\\fmsa2\\Desktop\\دراسة\\عال 212\\Project\\data\\dataset.csv");
-		File secondFile = new File("C:\\Users\\fmsa2\\Desktop\\دراسة\\عال 212\\Project\\data\\stop.txt");
+		File file = new File("C:\\Users\\PC\\Downloads\\data\\data\\dataset.csv");
+		File secondFile = new File("C:\\Users\\PC\\Downloads\\data\\data\\stop.txt");
 		try{
 			FileReader reader = new FileReader(file);
 			BufferedReader buffer = new BufferedReader(reader);
