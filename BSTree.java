@@ -1,5 +1,5 @@
 public class BSTree<T> {
-	
+
     private class BSTNode<T> {
         public String key;
         public T data;
@@ -11,7 +11,7 @@ public class BSTree<T> {
             left = right = null;
 
         }
-        
+
     }
 
     BSTNode<T> root, current;

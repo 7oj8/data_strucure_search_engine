@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class SimpleGUI {
-	
+
     public SimpleGUI() {
         JFrame frame = new JFrame("GUI");
         frame.setSize(600, 400);
@@ -62,7 +62,7 @@ public class SimpleGUI {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new SimpleGUI(); 
+                new SimpleGUI();
             }
         });
     }
