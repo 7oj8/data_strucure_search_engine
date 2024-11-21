@@ -16,8 +16,8 @@ public class ProjectMain {
 	}
 
 	static String handleFile() {
-		File file = new File("C:\\Users\\PC\\Downloads\\data\\data\\dataset.csv");
-		File secondFile = new File("C:\\Users\\PC\\Downloads\\data\\data\\stop.txt");
+		File file = new File("C:\\Users\\fmsa2\\Desktop\\دراسة\\عال 212\\Project\\data\\dataset.csv");
+		File secondFile = new File("C:\\Users\\fmsa2\\Desktop\\دراسة\\عال 212\\Project\\data\\stop.txt");
 		try{
 			FileReader reader = new FileReader(file);
 			BufferedReader buffer = new BufferedReader(reader);
@@ -252,7 +252,7 @@ public class ProjectMain {
 		return sortArr(documentsList,documentCounterList);
 	}
 
-//	public static String sortArr(int documents[],int counters[]) {
+	//	public static String sortArr(int documents[],int counters[]) {
 //		int n = documents.length;
 //		for (int i = 0; i < n-1; i++){
 //			for (int j = 0; j < n-1-i; j++){
@@ -269,10 +269,10 @@ public class ProjectMain {
 //		}
 //		return printArrWithCount(documents,counters);
 //	}
-public static String sortArr(int documents[], int counters[]) {
-	mergeSort(documents, counters, 0, counters.length - 1);
-	return printArrWithCount(documents, counters);
-}
+	public static String sortArr(int documents[], int counters[]) {
+		mergeSort(documents, counters, 0, counters.length - 1);
+		return printArrWithCount(documents, counters);
+	}
 
 	public static void mergeSort(int[] documents, int[] counters, int l, int r) {
 		if (l >= r)
@@ -331,13 +331,46 @@ public static String sortArr(int documents[], int counters[]) {
 		int[] result=new int[0];
 		Stack<String> opStack=new Stack<String>();
 		Stack<int[]> documentsStack=new Stack<int[]>();
+		String boolOp = "AND OR NOT";
+		//int opCount=0;
+		boolean didNot=false,didOp=false;
+
+
+		//Market AND sports NOT head OR weather
+		for(int i=1;i<arr.length-1;i++) {
+			if((arr[i].equals("AND")||arr[i].equals("OR")) && (arr[i-1].equals("OR")||arr[i+1].equals("AND"))) {
+				System.out.println("Error: Two AND/OR next To Each Other ");
+				return new int[0];
+			}
+			if(arr[i].equals("NOT") && (arr[i+1].equals("NOT")|| arr[i-1].equals("NOT"))) {
+				System.out.println("Error: Two NOT next To Each Other ");
+				return new int[0];
+			}
+		}
+
+
+
 		for(int i=0;i<arr.length;i++) {
+			if((arr[i].equals("AND")||arr[i].equals("OR"))&&didOp) {
+				System.out.println("Error in Order of words and operations!!\ntwo Boolean after each other are not Allowed!!");
+				return new int[0];
+			}
+			if(arr[i].equals("NOT")&&didNot) {
+				System.out.println("Error in Order of words and operations!!\ntwo NOT after each other are not Allowed!!");
+				return new int[0];
+			}
 			if(arr[i].equals("AND")){
 				opStack.push("AND");
+				//opCount++;
+				didOp=true;
+				didNot=false;
 			}
 			else if(arr[i].equals("OR")) {
 				if( opStack.empty() || !opStack.topDataWithoutPop().equals("AND")) {
 					opStack.push("OR");
+					//opCount++;
+					didOp=true;
+					didNot=false;
 				}
 				else {
 					System.out.println("Error");
@@ -346,9 +379,14 @@ public static String sortArr(int documents[], int counters[]) {
 			}
 			else if(arr[i].equals("NOT")) {
 				opStack.push("NOT");
+				//opCount++;
+				didNot=true;
+				didOp=false;
 			}
 			else {//normal word
 				int wordArr[];
+				//opCount--;
+				didOp=false;
 				if(caller.equalsIgnoreCase("index")) {
 					wordArr = getIndexDocs(arr[i]);
 				}
@@ -380,18 +418,18 @@ public static String sortArr(int documents[], int counters[]) {
 					opStack.pop();
 					result = notMethod(wordArr, documents.length);
 					documentsStack.push(result);
-					//market [1...50]
 				}
 				else {
 					System.out.println("Error in Order of words and operations!!");
 					return new int [0];
 				}
 			}
+			//-1 0 1
+//			if(opCount>=1 || opCount<=1) {
+//				System.out.println("Error in boolean operation syntax!!");
+//				return new int [0];
+//			}
 
-		}
-		if(!documentsStack.empty() && opStack.empty()) {
-			System.out.println("Make sure of Boolean Operations count");
-			return new int[0];
 		}
 		while(!documentsStack.empty()) {
 			result = orMethod(result, documentsStack.pop());
