@@ -13,8 +13,9 @@ public class indexList {
 		}
 	}
 
-	Node current,head; //every node is a word with counter
-	int wordCounter; //The First empty index and the number of current document
+	Node current,head;
+	int wordCounter;
+
 
 	public indexList() {
 		head=current=null;
@@ -28,13 +29,6 @@ public class indexList {
 			temp=temp.next;
 		}
 		return temp;
-//		for(int i=0;i<wordCounter;i++) {
-//			temp = nodeArr[i];
-//			if(temp.word.equals(word)) {
-//				return i;
-//			}
-//		}
-//		return -1;
 	}
 
 	public void addWord(String word) {
@@ -56,6 +50,13 @@ public class indexList {
 		else {
 			n.counter=n.counter+1;
 		}
+	}
+
+	public boolean checkExistanceOfWord(String word){
+		if(findNode(word)!=null)
+			return true;
+		else
+			return false;
 	}
 
 	public void printIndexNode() {

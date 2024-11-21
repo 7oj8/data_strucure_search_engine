@@ -1,19 +1,23 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.Set;
-
-import javax.crypto.spec.IvParameterSpec;
-import javax.swing.SwingUtilities;
-import javax.swing.text.StyledEditorKit.BoldAction;
-
 
 public class ProjectMain {
 	static BSTree<InvertedIndex> bs;
 	static String[] documents;
+	static InvertedIndex[] inverted;
+	static indexList[] index;
+
+	public static void main(String[] args) {
+		System.out.println("Start....");
+		String inputText = handleFile();
+		initDataStructure(inputText);
+		SimpleGUI s = new SimpleGUI();
+	}
+
 	static String handleFile() {
-		File file = new File("C:\\Users\\fmsa2\\Desktop\\دراسة\\عال 212\\Project\\data\\dataset.csv");
-		File secondFile = new File("C:\\Users\\fmsa2\\Desktop\\دراسة\\عال 212\\Project\\data\\stop.txt");
+		File file = new File("C:\\Users\\PC\\Downloads\\data\\data\\dataset.csv");
+		File secondFile = new File("C:\\Users\\PC\\Downloads\\data\\data\\stop.txt");
 		try{
 			FileReader reader = new FileReader(file);
 			BufferedReader buffer = new BufferedReader(reader);
@@ -35,7 +39,7 @@ public class ProjectMain {
 			buffer.close();
 			stopWordsBuffer.close();
 			temp = temp.replaceAll("-", " ");
-			temp = temp.replaceAll("[^a-zA-Z0-9 \n]", " ");//only keep alphanumeric
+			temp = temp.replaceAll("[^a-z0-9 \n]", " ");//only keep alphanumeric
 			return temp;
 		}
 		catch(Exception e) {
@@ -43,29 +47,33 @@ public class ProjectMain {
 			System.out.println(e.getMessage());
 			return "";
 		}
-
-	}
-
-	public static void main(String[] args) {
-		System.out.println("Start....");
-		String inputText = handleFile();
-		initDataStructure(inputText);
-		SimpleGUI s = new SimpleGUI();
-
 	}
 
 	public static void initDataStructure(String fileText) {
 		documents= fileText.split("\n");
 		bs = new BSTree<>();
 		String[] words;
-		//indexList[] index=new indexList[documents.length];//each item is words of one document
-		InvertedIndex[] inverted;
+		index=new indexList[documents.length]; //each item is words of one document
 		String wordsSpaces = fileText.replace("\n", " ");
 		wordsSpaces=wordsSpaces.replaceAll("\\s{2,}", " ");
+		wordsSpaces= wordsSpaces.replaceAll("^ ", ""); //remove space at the start
 		words=wordsSpaces.split(" ");
 		int size=words.length;
-
-		//remove repeated words
+		//init Index
+		for(int i=0;i<documents.length;i++) {
+			index[i]=new indexList();
+			for(int j=0;j<words.length;j++) {
+				if(documents[i].contains(words[j])) {
+					String documentWords[]=documents[i].split(" ");
+					for(int z=0;z<documentWords.length;z++) {
+						if(documentWords[z].equals(words[j])) {
+							index[i].addWord(words[j]);
+						}
+					}
+				}
+			}
+		}
+		//Move Repeated words to the end/remove them
 		for(int i=0;i<size;i++) {
 			for(int j=i+1;j<size;j++) {
 				if(words[i].equals(words[j])) {
@@ -77,43 +85,48 @@ public class ProjectMain {
 			}
 		}
 		int newSize = size;
-		inverted=new InvertedIndex[newSize]; //words.length???
+		inverted=new InvertedIndex[newSize];
 		int documentId;
+		//Inverted and BST
 		for(int i=0;i<newSize;i++) { //to loop over the words
 			inverted[i]= new InvertedIndex(words[i]);
 			for(int j=0;j<documents.length;j++) { //to loop over the documents
 				documentId=j;
-				if(documents[j].contains(inverted[i].word)){
+				if(documents[documentId].contains(inverted[i].word)){
 					String splitDocumentByWord[] = documents[j].split(" ");
 					for(int z=0;z<splitDocumentByWord.length;z++) {//to add each repetation
 						if(splitDocumentByWord[z].equals(inverted[i].word)) {
 							inverted[i].addDocument(documentId);
 							bs.insert(words[i], inverted[i]);
-
 						}
 					}
 				}
 			}
 		}
+	}
 
-
-//		for(int i=0;i<avl.counter;i++) {
-//			if(avl.findkey("head")) {
-//				System.out.println(i+":");
-//				avl.retrieve().printList();
-//			}
-//			else {
-//				System.out.println("Not Found");
-//			}
-//		}
+	public static int[] notMethod(int documents[],int documentCount) {
+		int newSize=documentCount-documents.length;
+		int pos=0;
+		int result[]=new int[newSize];
+		//initiate with all documents
+		boolean found;
+		for(int i=0;i<documentCount;i++) {
+			found=false;
+			for(int j=0;j<documents.length;j++) {
+				if(documents[j]==i) {
+					found=true;
+					break;
+				}
+			}
+			if(!found) {
+				result[pos++]=i;
+			}
+		}
+		return result;
 	}
 
 	public static int[] andMethod(int n1[],int n2[]) {
-//		System.out.println("n1:");
-//		printArr(n1);
-//		System.out.println("\nn2:");
-//		printArr(n2);
-
 		int tmp[];
 		int count=0;
 		if(n1.length>n2.length) {
@@ -124,7 +137,6 @@ public class ProjectMain {
 		}
 		tmp[0]=-1; //as a flag for using this array
 
-		//you can compare values using new int as the index instead of O(n^2)???
 		for(int i=0;i<n1.length;i++) {
 			for(int j=0;j<n2.length;j++) {
 				if(n1[i]==n2[j]) {
@@ -133,7 +145,6 @@ public class ProjectMain {
 				}
 			}
 		}
-
 		boolean arrIsInit=false;
 		if(tmp[0]!=-1)
 			arrIsInit=true;
@@ -147,8 +158,6 @@ public class ProjectMain {
 		for(int i=0;i<count;i++) {
 			tmp2[i]=tmp[i];
 		}
-		//System.out.println("Last thing in AND with size "+count);
-		//printArr(tmp2);
 		return tmp2;
 	}
 
@@ -183,50 +192,44 @@ public class ProjectMain {
 	}
 
 	public static int[] orMethod(int n1[],int n2[]) {
-//		System.out.println("in OR method");
-//		System.out.println("n1:");
-//		printArr(n1);
-//		System.out.println("n2:");
-//		printArr(n2);
 		return addArr(n1, n2);
-
-
 	}
 
-	public static String handleInput(String input) {
-		//System.out.println("The Input is"+input);
-		int arr[];
-		String text = "";
-		if(input.contains("AND")||input.contains("OR")) {
-			arr = handleBoolInput(input,0,new int[0]);
-			//System.out.println("in the AND OR");
-			//printArr(arr);
-			for(int i=0;i<arr.length;i++) {
-				text= text +" " +arr[i];
+	public static String handleInput(String input, String caller) {
+		int result[]=new int[0];
+		String text="";
+		if(input.contains("AND")||input.contains("OR")||input.contains("NOT")) {
+			result = handleBool(input, caller);
+			for(int i=0;i<result.length;i++) {
+				text= text +" " +result[i];
 			}
 		}
 		else {
-			text = handleRankingInput(input);
+			text =handleRankingInput(input,caller);
 		}
 		return text;
 	}
 
-	public static String handleRankingInput(String input){
+
+	public static String handleRankingInput(String input,String caller){
 		String words[] = input.toLowerCase().split(" ");
-		InvertedIndex n = null;
+		int n []= new int[0];
 		int documentsList[]=new int[0];
 		int documentCounterList[];
 		for(int i=0;i<words.length;i++) {
-			if(bs.findkey(words[i])){
-				n = bs.retrieve();
-				//System.out.println("len: "+n.getDocId().length);
-				documentsList = addArr(documentsList,n.getDocId());
-				//printArr(documentsList);
+			if(caller.equalsIgnoreCase("bst")){
+				n = getBSTDocs(words[i]);
+			}
+			else if(caller.equalsIgnoreCase("index")) {
+				n= getIndexDocs(words[i]);
+			}
+			else if(caller.equalsIgnoreCase("inverse")) {
+				n=getInverseDocs(words[i]);
 			}
 			else {
-				//System.out.println("The Words is not Saved!");
 				return "The Words is not Saved!";
 			}
+			documentsList = addArr(documentsList,n);
 		}
 		documentCounterList = new int[documentsList.length];
 		int documentNum;
@@ -240,30 +243,74 @@ public class ProjectMain {
 				}
 			}
 		}
-		System.out.println("Final Result:");
-		//printArr(documentCounterList);
-		//printArrWithCount(documentsList, documentCounterList);
-		System.out.println("\n\n\n");
 		return sortArr(documentsList,documentCounterList);
 	}
 
-	public static String sortArr(int documents[],int counters[]) {
-		int n = documents.length;
-		for (int i = 0; i < n-1; i++){
-			for (int j = 0; j < n-1-i; j++){
-				if (counters[j] < counters[j+1]){
-					//Swap A[j] with A[j+1]
-					int tmp1 = counters[j];
-					int tmp2 = documents[j];
-					counters[j] = counters[j+1];
-					documents[j] = documents[j+1];
-					counters[j+1] = tmp1 ;
-					documents[j+1] = tmp2 ;
-				}
+//	public static String sortArr(int documents[],int counters[]) {
+//		int n = documents.length;
+//		for (int i = 0; i < n-1; i++){
+//			for (int j = 0; j < n-1-i; j++){
+//				if (counters[j] < counters[j+1]){
+//					//Swap A[j] with A[j+1]
+//					int tmp1 = counters[j];
+//					int tmp2 = documents[j];
+//					counters[j] = counters[j+1];
+//					documents[j] = documents[j+1];
+//					counters[j+1] = tmp1 ;
+//					documents[j+1] = tmp2 ;
+//				}
+//			}
+//		}
+//		return printArrWithCount(documents,counters);
+//	}
+public static String sortArr(int documents[], int counters[]) {
+	mergeSort(documents, counters, 0, counters.length - 1);
+	return printArrWithCount(documents, counters);
+}
+
+	public static void mergeSort(int[] documents, int[] counters, int l, int r) {
+		if (l >= r)
+			return;
+		int m = (l + r) / 2;
+		mergeSort(documents, counters, l, m); // Sort first half
+		mergeSort(documents, counters, m + 1, r); // Sort second half
+		merge(documents, counters, l, m, r); // Merge
+	}
+
+	private static void merge(int[] documents, int[] counters, int l, int m, int r) {
+		int[] tempDocs = new int[r - l + 1];
+		int[] tempCounters = new int[r - l + 1];
+		int i = l, j = m + 1, k = 0;
+
+		// Merge based on counters array
+		while (i <= m && j <= r) {
+			if (counters[i] >= counters[j]) { // Descending order
+				tempCounters[k] = counters[i];
+				tempDocs[k++] = documents[i++];
+			} else {
+				tempCounters[k] = counters[j];
+				tempDocs[k++] = documents[j++];
 			}
 		}
-		return printArrWithCount(documents,counters);
+
+		// Copy remaining elements
+		while (i <= m) {
+			tempCounters[k] = counters[i];
+			tempDocs[k++] = documents[i++];
+		}
+		while (j <= r) {
+			tempCounters[k] = counters[j];
+			tempDocs[k++] = documents[j++];
+		}
+
+		// Copy back to original arrays
+		for (k = 0; k < tempCounters.length; k++) {
+			counters[l + k] = tempCounters[k];
+			documents[l + k] = tempDocs[k];
+		}
 	}
+
+
 
 	public static int findDocumentCounter(String word,int id){
 		int counter=0;
@@ -273,64 +320,111 @@ public class ProjectMain {
 		return counter;
 	}
 
-
-	public static int[] handleBoolInput(String input,int index,int[] oldArr){
+	public static int[] handleBool(String input,String caller) {
 		String arr[] = input.split(" ");
-		int size = arr.length;
-		if(index+1>=size) {
-			System.out.println("stop Recursion");
-			return oldArr;
-		}
-		boolean empty;
-		if(oldArr.length==0)
-			empty = true;
-		else
-			empty = false;
+		int[] result=new int[0];
+		Stack<String> opStack=new Stack<String>();
+		Stack<int[]> documentsStack=new Stack<int[]>();
+		for(int i=0;i<arr.length;i++) {
+			if(arr[i].equals("AND")){
+				opStack.push("AND");
+			}
+			else if(arr[i].equals("OR")) {
+				if( opStack.empty() || !opStack.topDataWithoutPop().equals("AND")) {
+					opStack.push("OR");
+				}
+				else {
+					System.out.println("Error");
+					return new int[0];
+				}
+			}
+			else if(arr[i].equals("NOT")) {
+				opStack.push("NOT");
+			}
+			else {//normal word
+				int wordArr[];
+				if(caller.equalsIgnoreCase("index")) {
+					wordArr = getIndexDocs(arr[i]);
+				}
+				else if(caller.equalsIgnoreCase("inverse")) {
+					wordArr =getInverseDocs(arr[i]);
+				}
+				else if(caller.equalsIgnoreCase("bst")){
+					wordArr = getBSTDocs(arr[i]);
+				}
+				else {
+					System.out.println("Error unknown caller!!");
+					return new int[0];
+				}
+				if(opStack.empty()|| opStack.topDataWithoutPop().equals("OR")) {
+					documentsStack.push(wordArr);
+				}
+				else if(opStack.topDataWithoutPop().equals("AND")) {
+					opStack.pop();
+					if(!documentsStack.empty()) {
+						int docs[] = documentsStack.pop();
+						result = andMethod(docs, wordArr);
+						documentsStack.push(result);
+					}
+					else {
+						System.out.println("Error");
+					}
+				}
+				else if(opStack.topDataWithoutPop().equals("NOT")) {
+					opStack.pop();
+					result = notMethod(wordArr, documents.length);
+					documentsStack.push(result);
+					//market [1...50]
+				}
+				else {
+					System.out.println("Error in Order of words and operations!!");
+					return new int [0];
+				}
+			}
 
-		index++;
-		InvertedIndex n1 = null;
-		InvertedIndex n2 = null;
-		int[] result;
-		System.out.println("words list len:"+size+" and index:"+index);
-
-		if (bs.findkey(arr[index-1].toLowerCase())) {
-			n1 = bs.retrieve();
-			System.out.println("n1= "+n1.word);
 		}
-		if (bs.findkey(arr[index+1].toLowerCase())) {
-			n2 = bs.retrieve();
-			System.out.println("n2= "+n2.word);
-		}
-		if(n1==null || n2==null) {
-			System.out.println("The used word doesn't exits");
+		if(!documentsStack.empty() && opStack.empty()) {
+			System.out.println("Make sure of Boolean Operations count");
 			return new int[0];
 		}
+		while(!documentsStack.empty()) {
+			result = orMethod(result, documentsStack.pop());
+		}
+		return result;
+	}
 
-		if(arr[index].equals("AND")) {
-			System.out.println("in the AND");
-
-			if(empty) {
-				result = andMethod(n1.getDocId(), n2.getDocId());
-				//printArr(result);
-			}
-			else {
-				result = andMethod(oldArr,n2.getDocId());
+	public static int[] getIndexDocs(String word) {
+		int documentElement[]=new int[index.length];
+		int counter=0;
+		for(int i=0;i<index.length;i++) {
+			if(index[i].checkExistanceOfWord(word.toLowerCase())) {
+				documentElement[counter++]=i;
 			}
 		}
-		else if(arr[index].equals("OR")) {
-			if(empty) {
-				result = orMethod(n1.getDocId(),n2.getDocId());
-				//printArr(result);
-			}
-			else {
-				result = orMethod(oldArr, n2.getDocId());
-			}
+		int result[]=new int[counter];
+		for(int i=0;i<counter;i++) {
+			result[i]=documentElement[i];
+		}
+		return result;
+	}
+
+	public static int[] getInverseDocs(String word) {
+		for(int i=0;i<inverted.length;i++) {
+			if(inverted[i].word.equalsIgnoreCase(word))
+				return inverted[i].getDocId();
+		}
+		System.out.println("inverse docs not Found!!");
+		return new int[0];
+	}
+
+	public static int[] getBSTDocs(String word) {
+		if(bs.findkey(word.toLowerCase())) {
+			return bs.retrieve().getDocId();
 		}
 		else {
-			System.out.println("error in words order!!");
-			return new int [0];
+			System.out.println("BST docs not found!!");
+			return new int[0];
 		}
-		return handleBoolInput(input, index+1, result);
 	}
 
 	public static void printArr(int n1[]) {
@@ -338,23 +432,21 @@ public class ProjectMain {
 		for(int i=0;i<n1.length;i++)
 			System.out.println(i+")i: "+n1[i]);
 	}
+
 	public static String printArrWithCount(int docs[] , int counts[]) {
 		String text="";
-		System.out.println("in the print Arr With Counter method:");
 		for(int i=0;i<docs.length;i++) {
-			System.out.println(i+") Document Id: "+docs[i]+", With Counter: "+counts[i]);
-			text +=(i+") Document Id: "+docs[i]+", With Counter: "+counts[i]);
+			//System.out.println(i+") Document Id: "+docs[i]+", With Counter: "+counts[i]);
+			text +=((i+1)+") Document Id: "+docs[i]+", With Counter: "+counts[i]);
 			text+="\n";
 		}
 		return text;
 	}
 
-
 	public static String Printindex(int id) {
 		String text = documents[id].replaceAll("\\s{2,}", " ");
-		System.out.println(text);
+		//System.out.println(text);
 		return text;
-		//return documents[id];
 	}
 	public static String printInvertedIndex(String words) {
 		String text = "";
@@ -362,7 +454,6 @@ public class ProjectMain {
 		if(bs.findkey(words.toLowerCase())) {
 			arr=bs.retrieve().getDocId();
 		}
-
 		else {
 			return "There is no Documents with This word....";
 		}
