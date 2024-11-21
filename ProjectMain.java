@@ -24,11 +24,17 @@ public class ProjectMain {
 			FileReader reader2 = new FileReader(secondFile);
 			BufferedReader stopWordsBuffer = new BufferedReader(reader2);
 			String temp ="";
-			buffer.readLine();//to get rid of the header
-			int numOfItem=50;
-			for(int i=0;i<numOfItem;i++) {
-				temp += ((buffer.readLine().toLowerCase()).replaceFirst(""+i, ""));
-				temp+="\n";
+//			buffer.readLine();//to get rid of the header
+//			int numOfItem=50;
+//			for(int i=0;i<numOfItem;i++) {
+//				temp += ((buffer.readLine().toLowerCase()).replaceFirst(""+i, ""));
+//				temp+="\n";
+//			}
+			buffer.readLine(); // Skip the header
+			String line;
+			while ((line = buffer.readLine()) != null) {
+				temp += (line.toLowerCase()).replaceFirst("" + temp.split("\n").length, "");
+				temp += "\n"; // Add a newline for the next document
 			}
 			String stopWord = stopWordsBuffer.readLine();
 
