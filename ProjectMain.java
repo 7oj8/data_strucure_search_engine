@@ -16,7 +16,7 @@ public class ProjectMain {
 	}
 
 	static String handleFile() {
-		File file = new File("C:\\Users\\fmsa2\\Desktop\\دراسة\\عال 212\\Project\\data\\dataset.csv");
+		File file = new File("C:\\Users\\fmsa2\\Desktop\\دراسة\\عال 212\\Project\\data\\i1.csv");
 		File secondFile = new File("C:\\Users\\fmsa2\\Desktop\\دراسة\\عال 212\\Project\\data\\stop.txt");
 		try{
 			FileReader reader = new FileReader(file);
@@ -347,6 +347,10 @@ public static String sortArr(int documents[], int counters[]) {
 			System.out.println("Error can't use AND/OR as the first!!");
 			return new int [0];
 		}
+		if( (arr[arr.length-1].equals("AND") || arr[arr.length-1].equals("OR") || arr[arr.length-1].equals("NOT")) ) {
+			System.out.println("Error can't use Bolean Operation as the last input!!");
+			return new int[0];
+		}
 		for(int i=0;i<arr.length;i++) {
 			if(arr[i].equals("AND")){
 				opStack.push("AND");
@@ -446,7 +450,7 @@ public static String sortArr(int documents[], int counters[]) {
 			return bs.retrieve().getDocId();
 		}
 		else {
-			System.out.println("BST docs not found!!");
+			System.out.println(word+") BST docs not found!!");
 			return new int[0];
 		}
 	}
